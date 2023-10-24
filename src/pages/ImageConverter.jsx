@@ -13,14 +13,16 @@ import { publicRequest } from "../requestMethods";
 import { notifications } from "@mantine/notifications";
 
 export const ImageConverter = () => {
-  const [value, setValue] = useState([]);
+  const [selectedImage, setSelectedImage] = useState([]);
+  const [selectedConversionMode, setSelectedConversionMode] = useState('XYZ');
   const [loading, setLoading] = useState(false);
 
   const handleUpload = async () => {
     const formData = new FormData();
-    formData.append("image", value);
+    formData.append("image", selectedImage);
+    formData.append("conversion_mode", selectedConversionMode);
 
-    if (value.length == 0) {
+    if (selectedImage.length == 0) {
       notifications.show({
         title: "Please select an image",
         color: 'red',
@@ -55,8 +57,8 @@ export const ImageConverter = () => {
         >
           <FileInput
             sx={{ width: 200 }}
-            value={value}
-            onChange={setValue}
+            value={selectedImage}
+            onChange={setSelectedImage}
             label="Your image"
             placeholder="Your image"
             icon={<IconUpload size={14} />}
@@ -64,7 +66,8 @@ export const ImageConverter = () => {
           <Select
             label="Converting method"
             placeholder="Pick one"
-            value={"XYZ"}
+            value={selectedConversionMode}
+            onChange={setSelectedConversionMode}
             sx={{ width: 120 }}
             data={[
               { value: "XYZ", label: "XYZ" },

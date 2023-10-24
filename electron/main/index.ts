@@ -47,7 +47,7 @@ async function createWindow() {
     title: 'TNM App',
     icon: join(process.env.PUBLIC, 'favicon.ico'),
     width: 800, // Set the initial width
-    height: 400, // Set the initial height
+    height: 400, // Set the initial height 
     webPreferences: {
       preload,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
