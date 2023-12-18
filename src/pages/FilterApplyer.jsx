@@ -5,23 +5,30 @@ import {
   Flex,
   Group,
   Input,
+  NumberInput,
   Select,
 } from "@mantine/core";
 import React, { useState } from "react";
-import { IconSettingsAutomation, IconUpload } from "@tabler/icons-react";
+import {
+  IconHash,
+  IconSettingsAutomation,
+  IconUpload,
+} from "@tabler/icons-react";
 import { publicRequest } from "../requestMethods";
 import { notifications } from "@mantine/notifications";
 import { fork } from "child_process";
 
-export const ImageConverter = () => {
+export const FilterApplyer = () => {
   const [selectedImage, setSelectedImage] = useState([]);
-  const [selectedConversionMode, setSelectedConversionMode] = useState("XYZ");
+  const [selectedConversionMode, setSelectedConversionMode] =
+    useState("gaussien");
   const [loading, setLoading] = useState(false);
-
+ const [value, setValue] = useState(25)
   const handleUpload = async () => {
     const formData = new FormData();
     formData.append("image", selectedImage);
     formData.append("conversion_mode", selectedConversionMode);
+    formData.append("value", value);
 
     if (selectedImage.length == 0) {
       notifications.show({
@@ -34,7 +41,7 @@ export const ImageConverter = () => {
 
     setLoading(true);
     try {
-      const res = await publicRequest.post("/upload_image", formData, {
+      const res = await publicRequest.post("/noise", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -48,6 +55,15 @@ export const ImageConverter = () => {
   return (
     <div style={{ height: "100vh" }}>
       <div style={{ display: "grid", placeContent: "center", height: "100%" }}>
+        <Select
+          label="Pick a type"
+          placeholder="Pick a filrt type"
+          data={["Noise", "Filter"]}
+          icon={<IconHash size="1rem" />}
+          variant="unstyled"
+          sx={{ width: 300 }}
+          mb={3}
+        />
         <Flex
           mih={50}
           gap="md"
@@ -65,16 +81,23 @@ export const ImageConverter = () => {
             icon={<IconUpload size={14} />}
           />
           <Select
-            label="Converting method"
+            label="Noise type"
             placeholder="Pick one"
             value={selectedConversionMode}
             onChange={setSelectedConversionMode}
             sx={{ width: 120 }}
             data={[
-              { value: "XYZ", label: "XYZ" },
-              { value: "HSL", label: "HSL" },
-              { value: "YUV", label: "YUV" },
+              { value: "gaussien", label: "gaussien" },
+              { value: "poivre et sel", label: "poivre et sel", selected: true },
             ]}
+          />
+          <NumberInput
+            sx={{ width: 100 }}
+            label="Value"
+            placeholder="Percents"
+            suffix="%"
+            value={value}
+            onChange={setValue}
           />
           <Flex direction="column">
             <Input.Label>Convert</Input.Label>
